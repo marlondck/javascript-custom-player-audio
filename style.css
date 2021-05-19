@@ -1,0 +1,34 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.container-flex {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#audio-player-container {
+  width: 90%;
+  height: 80px;
+  max-width: 500px;
+  background: #484848;
+  border-radius: 10px;
+}
+
+
+button {
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  outline: none;
+  width: 40px;
+  height: 40px;
+}
+
+#play-icon {
+  margin: 20px 2.5%;
+}
