@@ -1,8 +1,10 @@
 import lottieWeb from 'https://cdn.skypack.dev/lottie-web';
 
 const playIconContainer = document.getElementById('play-icon');
+const audioPlayerContainer = document.getElementById('audio-player-container');
 const audio = document.querySelector('audio');
 const durationContainer = document.getElementById('duration');
+const seekSlider = document.getElementById('seek-slider');
 
 let state = 'play';
 
@@ -27,25 +29,50 @@ const calculateTime = (secs) => {
   return `${minutes}:${returnedSeconds}`;
 }
 
-//
+// trocar o texto da duracao no dom
 const displayDuration = () => {
   durationContainer.textContent = calculateTime(audio.duration);
 }
 
-// Audio carregado
-audio.addEventListener('loadedmetadata', () => {
-  displayAudioDuration(audio.duration);
+// definir a prop max do input range com o valor correto do audio
+const setSliderMax = () => {
+  seekSlider.max = Math.floor(audio.duration);
+}
+
+// mostrar o progresso
+const showRangeProgress = (rangeInput) => {
+  if(rangeInput === seekSlider) audioPlayerContainer.style.setProperty('--seek-before-width', rangeInput.value / rangeInput.max * 100 + '%');
+  else audioPlayerContainer.style.setProperty('--volume-before-width', rangeInput.value / rangeInput.max * 100 + '%');
+}
+
+seekSlider.addEventListener('input', (e) => {
+  showRangeProgress(e.target);
 });
+
+const displayBufferedAmount = () => {
+  const bufferedAmount = Math.floor(audio.buffered.end(audio.buffered.length - 1));
+  audioPlayerContainer.style.setProperty('--buffered-width', `${(bufferedAmount / seekSlider.max) * 100}%`);
+}
+
+// Audio carregado
+// audio.addEventListener('loadedmetadata', () => {
+//   displayAudioDuration(audio.duration);
+// });
 
 // https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/readyState
 if (audio.readyState > 0) {
   displayDuration();
+  setSliderMax();
+  displayBufferedAmount();
 } else {
   audio.addEventListener('loadedmetadata', () => {
     displayDuration();
+    setSliderMax();
+    displayBufferedAmount();
   });
 }
 
+audio.addEventListener('progress', displayBufferedAmount);
 
 // Click no botão
 playIconContainer.addEventListener('click', () => {
@@ -57,3 +84,4 @@ playIconContainer.addEventListener('click', () => {
     state = 'play';
   }
 });
+
