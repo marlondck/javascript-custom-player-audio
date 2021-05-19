@@ -81,9 +81,11 @@ seekSlider.addEventListener('input', () => {
 // Click no botão
 playIconContainer.addEventListener('click', () => {
   if(state === 'play') {
+    audio.play();
     animation.playSegments([14, 27], true);
     state = 'pause';
   } else {
+    audio.pause();
     animation.playSegments([0, 14], true);
     state = 'play';
   }
