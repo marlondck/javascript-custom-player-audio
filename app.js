@@ -8,6 +8,8 @@ const seekSlider = document.getElementById('seek-slider');
 const currentTimeContainer = document.getElementById('current-time');
 
 let state = 'play';
+// request animation frame
+let raf = null;
 
 // Animarion
 const animation = lottieWeb.loadAnimation({
@@ -55,6 +57,14 @@ const displayBufferedAmount = () => {
   audioPlayerContainer.style.setProperty('--buffered-width', `${(bufferedAmount / seekSlider.max) * 100}%`);
 }
 
+const whilePlaying = () => {
+  seekSlider.value = Math.floor(audio.currentTime);
+  currentTimeContainer.textContent = calculateTime(seekSlider.value);
+  audioPlayerContainer.style.setProperty('--seek-before-width', `${seekSlider.value / seekSlider.max * 100}%`);
+  raf = requestAnimationFrame(whilePlaying);
+}
+
+
 // Audio carregado
 // audio.addEventListener('loadedmetadata', () => {
 //   displayAudioDuration(audio.duration);
@@ -84,6 +94,10 @@ seekSlider.addEventListener('input', () => {
 // tocar a partir de um ponto do range
 seekSlider.addEventListener('change', () => {
   audio.currentTime = seekSlider.value;
+
+  if(!audio.paused) {
+    requestAnimationFrame(whilePlaying);
+  }
 });
 audio.addEventListener('timeupdate', () => {
   seekSlider.value = Math.floor(audio.currentTime);
@@ -94,10 +108,12 @@ playIconContainer.addEventListener('click', () => {
   if(state === 'play') {
     audio.play();
     animation.playSegments([14, 27], true);
+    requestAnimationFrame(whilePlaying);
     state = 'pause';
   } else {
     audio.pause();
     animation.playSegments([0, 14], true);
+    cancelAnimationFrame(raf);
     state = 'play';
   }
 });
