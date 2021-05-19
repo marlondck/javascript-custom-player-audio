@@ -73,9 +73,20 @@ if (audio.readyState > 0) {
   });
 }
 
+// mostrar o buffer
 audio.addEventListener('progress', displayBufferedAmount);
+
+// mostrar em texto o tempo atual
 seekSlider.addEventListener('input', () => {
   currentTimeContainer.textContent = calculateTime(seekSlider.value);
+});
+
+// tocar a partir de um ponto do range
+seekSlider.addEventListener('change', () => {
+  audio.currentTime = seekSlider.value;
+});
+audio.addEventListener('timeupdate', () => {
+  seekSlider.value = Math.floor(audio.currentTime);
 });
 
 // Click no botão
