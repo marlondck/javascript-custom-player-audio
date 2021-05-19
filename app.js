@@ -5,6 +5,7 @@ const audioPlayerContainer = document.getElementById('audio-player-container');
 const audio = document.querySelector('audio');
 const durationContainer = document.getElementById('duration');
 const seekSlider = document.getElementById('seek-slider');
+const currentTimeContainer = document.getElementById('current-time');
 
 let state = 'play';
 
@@ -73,6 +74,9 @@ if (audio.readyState > 0) {
 }
 
 audio.addEventListener('progress', displayBufferedAmount);
+seekSlider.addEventListener('input', () => {
+  currentTimeContainer.textContent = calculateTime(seekSlider.value);
+});
 
 // Click no botão
 playIconContainer.addEventListener('click', () => {
